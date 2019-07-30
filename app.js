@@ -1,19 +1,24 @@
-const http = require('http');
 
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 
-app.use((req, res, next) => {
-	console.log('In the midleware');
-	next();//allows the request to continue to the next middleware in line
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use('/add-product', (req, res, next) => {
+	console.log('In anothe middleware!');
+	res.send('<form action="/product" method="POST"><input type="text" name="title"><button type="submit">Add Product Name</button></form>');
 });
 
-app.use((req, res, next) => {
+app.use('/product', (req, res, next) => {
+	console.log(req.body);
+	res.redirect('/');
+});
+
+app.use('/', (req, res, next) => {
 	console.log('In anothe middleware!');
 	res.send('<h1>Hello from Express!</h1>');
-})
+});
 
-const server = http.createServer(app);
-
-server.listen(3000);
+app.listen(3000);
